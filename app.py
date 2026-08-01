@@ -1,4 +1,4 @@
-import os
+import io
 import itertools
 import datetime
 
@@ -6,9 +6,6 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(page_title="Room Expense Calculator", layout="wide")
-
-DATA_DIR = "expense_records"
-os.makedirs(DATA_DIR, exist_ok=True)
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
@@ -405,16 +402,13 @@ with col_y:
                             index=datetime.date.today().year - 2023)
 
 filename = f"Room_Expense_{sel_month}_{sel_year}.xlsx"
-filepath = os.path.join(DATA_DIR, filename)
 
 with col_btn:
     st.write("")
     st.write("")
-    save_clicked = st.button("💾 Save / Override Excel", use_container_width=True)
 
-if save_clicked:
-    existed = os.path.exists(filepath)
-    with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
         styled_df.to_excel(writer, sheet_name="Summary", index=False)
 
         if not settle_rows.empty:
@@ -436,12 +430,8 @@ if save_clicked:
                         maid_due, owner_due],
         }).to_excel(writer, sheet_name="Settings", index=False)
 
-    st.success(("Overridden: " if existed else "Saved: ") + filename)
-
-if os.path.exists(filepath):
-    with open(filepath, "rb") as f:
-        st.download_button(
-            "⬇️ Download Excel", data=f.read(),
-            file_name=filename,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+    st.download_button(
+        "⬇️ Download Excel", data=output.getvalue(),
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
