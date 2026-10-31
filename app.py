@@ -17,8 +17,8 @@ st.title("🏠 Room Expense Calculator & Settlement")
 # =================================================================
 if "people" not in st.session_state:
     st.session_state.people = pd.DataFrame({
-        "Name":           ["Keshav", "Rajan", "Ruturaj", "Prithviraj", "Mahesh", "Vishwajit", "Shivtej"],
-        "In Rent":        [True,  True,  True,  True,  True,  True,  False],
+        "Name":           ["Keshav", "Rajan", "Ruturaj", "Prithviraj", "Mahesh", "Vishwajit", "Shubham"],
+        "In Rent":        [True,  True,  True,  True,  True,  True,  True],
         "In Bill":        [True,  True,  True,  True,  True,  True,  True],
         "In Maid":        [True,  True,  True,  True,  True,  True,  True],
         "In Groceries":   [True,  True,  True,  True,  True,  True,  True],
